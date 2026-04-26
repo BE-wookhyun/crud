@@ -1,4 +1,4 @@
-v2 : docker-compose 통한 컨테이너화
+v2+ : docker-compose 통한 컨테이너화 + nginx
 
 php / db 컨테이너로 관리하기
 secrets 로 DB password 관리
