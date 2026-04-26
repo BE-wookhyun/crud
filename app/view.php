@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <?php include 'db.php'; ?> 
 <!DOCTYPE html>
 <html>
@@ -48,7 +51,6 @@
             <ul>
                 <li><button onclick="location.href='index.php'">목록</button></li>
             <?php
-            session_start();
             $user_id = $_SESSION['id'] ?? null;
             ?>
 

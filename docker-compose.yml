@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  php:
+    image: wookhyunkim/php-server:v2
+    container_name: php-app
+    ports:
+      - "8080:8000"
+    volumes:
+      - ./app:/app
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      # DB_PASSWORD는 이제 secret으로 안전하게 관리됩니다.
+    depends_on:
+      - db
+    # 이 서비스에서 사용할 secret들을 명시합니다.
+    secrets:
+      - db_password
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    volumes:
+      # named volume 을 통한 DB 백업
+      - db_data:/var/lib/mysql
+    environment:
+      # MariaDB 이미지는 _FILE 접미사를 사용하여 파일로부터 비밀번호를 읽는 기능을 지원합니다.
+      # 컨테이너 내의 /run/secrets/ 경로에 마운트된 secret 파일을 지정합니다.
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD_FILE=/run/secrets/db_password
+    ports:
+      - "3306:3306"
+    secrets:
+      - db_root_password
+      - db_password
+
+# 최상위 레벨에서 사용할 secret들을 정의합니다.
+# 실제 비밀번호는 `file:`에 지정된 경로의 파일에 저장되어 있습니다.
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+
+volumes:
+  db_data: 
