@@ -3,7 +3,8 @@ version: '3.8'
 services:
   php:
     image: wookhyunkim/php-server:v2
-    # container_name: php-app  # replica / --scale 을 하려면 컨테이너명 고정 x 
+    deploy:
+      replicas: 3
     volumes:
       - ./app:/app
     environment:
