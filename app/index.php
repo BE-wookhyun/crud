@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +12,7 @@
 <body>
     <div class="loginButton">
         <?php
-            session_start();
+            // session_start();
             $name = $_SESSION['name'] ?? null;
         ?>
         <?php
