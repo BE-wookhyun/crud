@@ -1,4 +1,5 @@
-v2 : docker-compose 통한 컨테이너화
+v3 : docker-compose 통한 컨테이너화
+: 코드 리팩토링 / DB 작업 분리
 
 php / db 컨테이너로 관리하기
 secrets 로 DB password 관리

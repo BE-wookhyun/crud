@@ -1,3 +1,4 @@
-app/db.php
+# app/db.php
+# app/init_db.php
 # secrets 실제로는 해야함
 # .env

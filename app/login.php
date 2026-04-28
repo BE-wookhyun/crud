@@ -1,43 +1,43 @@
 <?php
-include('db.php');
-// require_once('db.php');
+session_start();
+require_once __DIR__ . '/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = isset($_POST['email']) ? $_POST['email'] : null;
-    $pw = isset($_POST['pw']) ? $_POST['pw'] : null;
+$error = '';
 
-    if ($email == null || $pw == null) {
-        echo "<script>alert('이메일과 비밀번호를 입력해주세요.'); location.href='login.php';</script>";
-        exit();
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $pw = trim($_POST['pw'] ?? '');
 
-    $stmt = $conn->prepare("SELECT idx, user_pw,user_name FROM users WHERE user_email = ?");
-    $stmt->bind_param("s", $email);
-    $result = $stmt->execute();
-    $stmt->bind_result($idx, $user_pw,$user_name);
-    $stmt->fetch();
-    $stmt->close();
-
-    
-    // $is_match_pw = password_verify($pw, $user_pw);
-    if ($result) {
-        session_start();
-        $_SESSION['id'] = $idx;
-        $_SESSION['name'] = $user_name;
-        echo "<script>alert('로그인 되었습니다.'); location.href='index.php';</script>";
+    // 입력값 검증
+    if ($email === '' || $pw === '') {
+        $error = '이메일과 비밀번호를 입력해주세요.';
     } else {
-        echo "<script>alert('이메일 또는 비밀번호가 일치하지 않습니다.'); location.href='login.php';</script>";
+        $stmt = $conn->prepare("SELECT idx, user_pw, user_name FROM users WHERE user_email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
+
+        // 로그인 검증
+        if ($user && password_verify($pw, $user['user_pw'])) {
+            $_SESSION['id'] = $user['idx'];
+            $_SESSION['name'] = $user['user_name'];
+
+            header("Location: index.php");
+            exit();
+        } else {
+            $error = '이메일 또는 비밀번호가 일치하지 않습니다.';
+        }
     }
-    
 }
-
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>로그인</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="login">

@@ -1,5 +1,5 @@
 <?php
-	include 'db.php';
+    require __DIR__ . '/db.php';
 	
 	$id = $_GET['id'];
     $stmt = $conn->prepare("DELETE FROM boards WHERE board_id='$id';");

@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+require __DIR__ . '/db.php';
 
 $stmt = $conn->prepare("SELECT * FROM boards WHERE board_id = ?");
 $stmt->bind_param("i",$id);
